@@ -1,4 +1,12 @@
-import { Grid, Input, makeStyles, Slider, Typography } from "@material-ui/core";
+import {
+  createStyles,
+  Grid,
+  Input,
+  makeStyles,
+  Slider,
+  Theme,
+  Typography,
+} from "@material-ui/core";
 import React from "react";
 
 import "./App.css";
@@ -14,14 +22,44 @@ const defaultDist = 5;
 const minTime = 60;
 const maxTime = 10 * 60 * 60;
 
-const useStyles = makeStyles({
-  root: {
-    width: 250,
-  },
-  input: {
-    width: 42,
-  },
-});
+const distanceMarks = [
+  { value: 5, label: "5k" },
+  { value: 10, label: "10k" },
+  { value: 21.1, label: "1/2 marathon" },
+  { value: 42.2, label: "marathon" },
+];
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      width: 250,
+    },
+    input: {
+      width: 60,
+    },
+    container: {
+      display: "flex",
+      flexWrap: "wrap",
+    },
+    textField: {
+      marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(1),
+      width: 200,
+    },
+  })
+);
+
+const formatSeconds = (duration: number) => {
+  duration = Math.round(duration);
+  const sec = duration % 60;
+  const allMin = Math.floor(duration / 60);
+  const min = allMin % 60;
+  const hours = Math.floor(allMin / 60);
+
+  return `${hours ? hours + ":" : ""}${hours && min < 10 ? "0" + min : min}:${
+    sec < 10 ? "0" + sec : sec
+  }`;
+};
 
 function App() {
   const classes = useStyles();
@@ -86,6 +124,9 @@ function App() {
               min={minDist}
               max={maxDist}
               value={dist}
+              step={0.1}
+              valueLabelDisplay="auto"
+              marks={distanceMarks}
               onChange={handleDistSliderChange}
               aria-labelledby="dist-slider"
             />
@@ -118,6 +159,8 @@ function App() {
               min={maxSpeed}
               max={minSpeed}
               value={speed}
+              valueLabelDisplay="auto"
+              valueLabelFormat={formatSeconds}
               onChange={handleSpeedSliderChange}
               aria-labelledby="speed-slider"
             />
@@ -125,15 +168,12 @@ function App() {
           <Grid item>
             <Input
               className={classes.input}
-              value={speed}
+              value={formatSeconds(speed)}
               margin="dense"
               onChange={handleSpeedInputChange}
               onBlur={handleSpeedBlur}
               inputProps={{
-                step: 1,
-                min: { maxSpeed },
-                max: { minSpeed },
-                type: "number",
+                type: "text",
                 "aria-labelledby": "speed-slider",
               }}
             />
@@ -157,15 +197,12 @@ function App() {
           <Grid item>
             <Input
               className={classes.input}
-              value={time}
+              value={formatSeconds(time)}
               margin="dense"
               onChange={handleTimeInputChange}
               onBlur={handleTimeBlur}
               inputProps={{
-                step: 1,
-                min: { maxSpeed },
-                max: { minSpeed },
-                type: "number",
+                type: "text",
                 "aria-labelledby": "time-slider",
               }}
             />
