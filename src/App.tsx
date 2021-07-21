@@ -1,7 +1,7 @@
 import {
   createStyles,
-  Grid,
   Input,
+  Grid,
   makeStyles,
   Slider,
   Theme,
@@ -19,9 +19,6 @@ const defaultSpeed = 5 * 60;
 const minDist = 1;
 const maxDist = 50;
 const defaultDist = 5;
-
-const minTime = 60;
-const maxTime = 10 * 60 * 60;
 
 const distanceMarks = [
   { value: 5, label: "5k" },
@@ -60,27 +57,17 @@ const strToTime = (str: string): number => {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      width: 250,
-    },
     input: {
-      width: 60,
-    },
-    container: {
-      display: "flex",
-      flexWrap: "wrap",
-    },
-    textField: {
-      marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1),
-      width: 200,
+      width: 70,
+      "& input": {
+        textAlign: "right",
+      },
     },
   })
 );
 
 function App() {
   const classes = useStyles();
-
   const [speed, setSpeed] = React.useState<number>(defaultSpeed); // in seconds per KM
   const [dist, setDist] = React.useState<number>(defaultDist);
   const time = speed * dist;
@@ -96,17 +83,6 @@ function App() {
   const handleTimeSliderChange = (event: any, newValue: any) => {
     const newTime = Number(newValue);
     setSpeed(newTime / dist);
-  };
-
-  const handleTimeInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const newTime = event.target.value === "" ? 0 : Number(event.target.value);
-    setSpeed(newTime / dist);
-  };
-
-  const handleTimeBlur = () => {
-    //TODO Validate
   };
 
   return (
@@ -134,8 +110,11 @@ function App() {
               mask="99.99"
               maskChar="0"
               inputMode="decimal"
+              className={classes.input}
               onChange={(event) => setDist(strToDist(event.target.value))}
-            />
+            >
+              {(inputProps: any) => <Input {...inputProps} />}
+            </InputMask>
           </Grid>
         </Grid>
       </div>
@@ -161,8 +140,11 @@ function App() {
               mask="99:99"
               maskChar="0"
               inputMode="decimal"
+              className={classes.input}
               onChange={(event) => setSpeed(strToSpeed(event.target.value))}
-            />
+            >
+              {(inputProps: any) => <Input {...inputProps} />}
+            </InputMask>
           </Grid>
         </Grid>
       </div>
@@ -173,8 +155,8 @@ function App() {
         <Grid container spacing={2}>
           <Grid item xs>
             <Slider
-              min={minTime}
-              max={maxTime}
+              min={maxSpeed * dist}
+              max={minSpeed * dist}
               value={time}
               onChange={handleTimeSliderChange}
               aria-labelledby="time-slider"
@@ -186,10 +168,13 @@ function App() {
               mask="99:99:99"
               maskChar="0"
               inputMode="decimal"
+              className={classes.input}
               onChange={(event) =>
                 setSpeed(strToTime(event.target.value) / dist)
               }
-            />
+            >
+              {(inputProps: any) => <Input {...inputProps} />}
+            </InputMask>
           </Grid>
         </Grid>
       </div>
