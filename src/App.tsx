@@ -7,6 +7,7 @@ import {
   Theme,
   Typography,
 } from "@material-ui/core";
+import InputMask from "react-input-mask";
 import React from "react";
 
 import "./App.css";
@@ -29,6 +30,34 @@ const distanceMarks = [
   { value: 42.2, label: "marathon" },
 ];
 
+const twoDigit = (str: number) => str.toString().padStart(2, "0");
+
+const strToDist = (str: string): number => (str === "" ? 0 : Number(str));
+const distToStr = (val: number): string => val.toFixed(2).padStart(5, "0");
+
+const strToSpeed = (str: string): number => {
+  const [mins, secs] = str.split(":");
+  return Number(mins) * 60 + Number(secs);
+};
+const speedToStr = (val: number): string => {
+  const secs = val % 60;
+  const mins = Math.floor(val / 60);
+  return `${twoDigit(mins)}:${twoDigit(secs)}`;
+};
+
+const timeToStr = (time: number): string => {
+  time = Math.round(time);
+  const secs = time % 60;
+  const mins = Math.floor(time / 60) % 60;
+  const hours = Math.floor(time / 3600);
+
+  return `${twoDigit(hours)}:${twoDigit(mins)}:${twoDigit(secs)}}`;
+};
+const strToTime = (str: string): number => {
+  const [hours, mins, secs] = str.split(":");
+  return Number(hours) * 3600 + Number(mins) * 60 + Number(secs);
+};
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -49,18 +78,6 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const formatSeconds = (duration: number) => {
-  duration = Math.round(duration);
-  const sec = duration % 60;
-  const allMin = Math.floor(duration / 60);
-  const min = allMin % 60;
-  const hours = Math.floor(allMin / 60);
-
-  return `${hours ? hours + ":" : ""}${hours && min < 10 ? "0" + min : min}:${
-    sec < 10 ? "0" + sec : sec
-  }`;
-};
-
 function App() {
   const classes = useStyles();
 
@@ -72,28 +89,8 @@ function App() {
     setDist(Number(newValue));
   };
 
-  const handleDistInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setDist(event.target.value === "" ? 0 : Number(event.target.value));
-  };
-
-  const handleDistBlur = () => {
-    //TODO Validate
-  };
-
   const handleSpeedSliderChange = (event: any, newValue: any) => {
     setSpeed(Number(newValue));
-  };
-
-  const handleSpeedInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setSpeed(event.target.value === "" ? 0 : Number(event.target.value));
-  };
-
-  const handleSpeedBlur = () => {
-    //TODO Validate
   };
 
   const handleTimeSliderChange = (event: any, newValue: any) => {
@@ -132,19 +129,12 @@ function App() {
             />
           </Grid>
           <Grid item>
-            <Input
-              className={classes.input}
-              value={dist}
-              margin="dense"
-              onChange={handleDistInputChange}
-              onBlur={handleDistBlur}
-              inputProps={{
-                step: 1,
-                min: { minDist },
-                max: { maxDist },
-                type: "number",
-                "aria-labelledby": "dist-slider",
-              }}
+            <InputMask
+              value={distToStr(dist)}
+              mask="99.99"
+              maskChar="0"
+              inputMode="decimal"
+              onChange={(event) => setDist(strToDist(event.target.value))}
             />
           </Grid>
         </Grid>
@@ -160,22 +150,18 @@ function App() {
               max={minSpeed}
               value={speed}
               valueLabelDisplay="auto"
-              valueLabelFormat={formatSeconds}
+              valueLabelFormat={speedToStr}
               onChange={handleSpeedSliderChange}
               aria-labelledby="speed-slider"
             />
           </Grid>
           <Grid item>
-            <Input
-              className={classes.input}
-              value={formatSeconds(speed)}
-              margin="dense"
-              onChange={handleSpeedInputChange}
-              onBlur={handleSpeedBlur}
-              inputProps={{
-                type: "text",
-                "aria-labelledby": "speed-slider",
-              }}
+            <InputMask
+              value={speedToStr(speed)}
+              mask="99:99"
+              maskChar="0"
+              inputMode="decimal"
+              onChange={(event) => setSpeed(strToSpeed(event.target.value))}
             />
           </Grid>
         </Grid>
@@ -195,16 +181,14 @@ function App() {
             />
           </Grid>
           <Grid item>
-            <Input
-              className={classes.input}
-              value={formatSeconds(time)}
-              margin="dense"
-              onChange={handleTimeInputChange}
-              onBlur={handleTimeBlur}
-              inputProps={{
-                type: "text",
-                "aria-labelledby": "time-slider",
-              }}
+            <InputMask
+              value={timeToStr(time)}
+              mask="99:99:99"
+              maskChar="0"
+              inputMode="decimal"
+              onChange={(event) =>
+                setSpeed(strToTime(event.target.value) / dist)
+              }
             />
           </Grid>
         </Grid>
