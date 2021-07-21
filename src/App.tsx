@@ -55,6 +55,7 @@ const strToTime = (str: string): number => {
   return Number(hours) * 3600 + Number(mins) * 60 + Number(secs);
 };
 
+const inputAttrs = { inputMode: "decimal" };
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     input: {
@@ -109,11 +110,12 @@ function App() {
               value={distToStr(dist)}
               mask="99.99"
               maskChar="0"
-              inputMode="decimal"
               className={classes.input}
               onChange={(event) => setDist(strToDist(event.target.value))}
             >
-              {(inputProps: any) => <Input {...inputProps} />}
+              {(inputProps: any) => (
+                <Input {...inputProps} inputProps={inputAttrs} />
+              )}
             </InputMask>
           </Grid>
         </Grid>
@@ -139,11 +141,12 @@ function App() {
               value={speedToStr(speed)}
               mask="99:99"
               maskChar="0"
-              inputMode="decimal"
               className={classes.input}
               onChange={(event) => setSpeed(strToSpeed(event.target.value))}
             >
-              {(inputProps: any) => <Input {...inputProps} />}
+              {(inputProps: any) => (
+                <Input {...inputProps} inputProps={inputAttrs} />
+              )}
             </InputMask>
           </Grid>
         </Grid>
@@ -167,13 +170,14 @@ function App() {
               value={timeToStr(time)}
               mask="99:99:99"
               maskChar="0"
-              inputMode="decimal"
               className={classes.input}
               onChange={(event) =>
                 setSpeed(strToTime(event.target.value) / dist)
               }
             >
-              {(inputProps: any) => <Input {...inputProps} />}
+              {(inputProps: any) => (
+                <Input {...inputProps} inputProps={inputAttrs} />
+              )}
             </InputMask>
           </Grid>
         </Grid>
