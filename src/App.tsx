@@ -66,7 +66,7 @@ const inputAttrs = { inputMode: "decimal" };
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     input: {
-      width: 70,
+      width: 120,
       "& input": {
         textAlign: "right",
       },
@@ -98,124 +98,97 @@ function App() {
 
   return (
     <div className="App">
-      <div>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Typography variant="h4">Distance</Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <ToggleButtonGroup
-              value={dist}
-              exclusive
-              onChange={handleDistSliderChange}
-              aria-label="text formatting"
+      <Container fixed>
+        <Typography variant="h5">Distance</Typography>
+        <ToggleButtonGroup
+          value={dist}
+          exclusive
+          onChange={handleDistSliderChange}
+          aria-label="text formatting"
+        >
+          {distanceMarks.map(({ value, label }) => (
+            <ToggleButton
+              key={value}
+              value={value}
+              aria-label={label}
+              size="small"
+              className={classes.distToggle}
             >
-              {distanceMarks.map(({ value, label }) => (
-                <ToggleButton
-                  key={value}
-                  value={value}
-                  aria-label={label}
-                  size="small"
-                  className={classes.distToggle}
-                >
-                  {label}
-                </ToggleButton>
-              ))}
-            </ToggleButtonGroup>
-          </Grid>
+              {label}
+            </ToggleButton>
+          ))}
+        </ToggleButtonGroup>
 
-          <Grid item xs={12}>
-            <InputMask
-              value={distToStr(dist)}
-              mask="99.99"
-              maskChar="0"
-              className={classes.input}
-              onChange={(event) => setDist(strToDist(event.target.value))}
-            >
-              {(inputProps: any) => (
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  {...inputProps}
-                  inputProps={inputAttrs}
-                />
-              )}
-            </InputMask>
-          </Grid>
-        </Grid>
-      </div>
-      <div>
-        <Typography id="speed-slider" gutterBottom>
-          Pace
-        </Typography>
-        <Grid container spacing={2}>
-          <Grid item xs>
-            <Slider
-              min={maxSpeed}
-              max={minSpeed}
-              value={speed}
-              valueLabelDisplay="auto"
-              valueLabelFormat={speedToStr}
-              onChange={handleSpeedSliderChange}
-              aria-labelledby="speed-slider"
+        <div>
+          <InputMask
+            value={distToStr(dist)}
+            mask="99.99"
+            maskChar="0"
+            className={classes.input}
+            onChange={(event) => setDist(strToDist(event.target.value))}
+          >
+            {(inputProps: any) => (
+              <TextField
+                variant="outlined"
+                size="small"
+                {...inputProps}
+                inputProps={inputAttrs}
+              />
+            )}
+          </InputMask>
+        </div>
+
+        <Typography variant="h5">Pace</Typography>
+        <Slider
+          min={maxSpeed}
+          max={minSpeed}
+          value={speed}
+          valueLabelDisplay="auto"
+          valueLabelFormat={speedToStr}
+          onChange={handleSpeedSliderChange}
+          aria-labelledby="speed-slider"
+        />
+        <InputMask
+          value={speedToStr(speed)}
+          mask="99:99"
+          maskChar="0"
+          className={classes.input}
+          onChange={(event) => setSpeed(strToSpeed(event.target.value))}
+        >
+          {(inputProps: any) => (
+            <TextField
+              variant="outlined"
+              size="small"
+              {...inputProps}
+              inputProps={inputAttrs}
             />
-          </Grid>
-          <Grid item>
-            <InputMask
-              value={speedToStr(speed)}
-              mask="99:99"
-              maskChar="0"
-              className={classes.input}
-              onChange={(event) => setSpeed(strToSpeed(event.target.value))}
-            >
-              {(inputProps: any) => (
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  {...inputProps}
-                  inputProps={inputAttrs}
-                />
-              )}
-            </InputMask>
-          </Grid>
-        </Grid>
-      </div>
-      <div>
-        <Typography id="time-slider" gutterBottom>
-          Time
-        </Typography>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Slider
-              min={maxSpeed * dist}
-              max={minSpeed * dist}
-              value={time}
-              onChange={handleTimeSliderChange}
-              aria-labelledby="time-slider"
+          )}
+        </InputMask>
+        <Typography variant="h5">Time</Typography>
+        <Slider
+          min={maxSpeed * dist}
+          max={minSpeed * dist}
+          value={time}
+          onChange={handleTimeSliderChange}
+          aria-labelledby="time-slider"
+        />
+        <InputMask
+          value={timeToStr(time)}
+          mask="99:99:99"
+          maskChar="0"
+          className={classes.input}
+          onChange={(event) => setSpeed(strToTime(event.target.value) / dist)}
+        >
+          {(inputProps: any) => (
+            <TextField
+              variant="outlined"
+              size="small"
+              {...inputProps}
+              inputProps={inputAttrs}
             />
-          </Grid>
-          <Grid item>
-            <InputMask
-              value={timeToStr(time)}
-              mask="99:99:99"
-              maskChar="0"
-              className={classes.input}
-              onChange={(event) =>
-                setSpeed(strToTime(event.target.value) / dist)
-              }
-            >
-              {(inputProps: any) => (
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  {...inputProps}
-                  inputProps={inputAttrs}
-                />
-              )}
-            </InputMask>
-          </Grid>
-        </Grid>
-      </div>
+          )}
+        </InputMask>
+      </Container>
     </div>
   );
 }
