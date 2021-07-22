@@ -1,8 +1,6 @@
 import {
   createStyles,
-  Input,
   TextField,
-  Grid,
   makeStyles,
   Slider,
   Theme,
@@ -14,6 +12,7 @@ import InputMask from "react-input-mask";
 import React from "react";
 
 import "./App.css";
+import RoundSlider from "./RoundSlider";
 
 const minSpeed = 10 * 60;
 const maxSpeed = 2 * 60;
@@ -188,6 +187,27 @@ function App() {
             />
           )}
         </InputMask>
+        <div>
+          <RoundSlider
+            sliderType="min-range"
+            update={(e: { value: any }) => setSpeed(Number(e.value))}
+            value={speed}
+            startAngle="320"
+            endAngle="220"
+            radius="160"
+            width="6"
+            handleSize="+24"
+            animation="false"
+            min={maxSpeed}
+            max={minSpeed}
+            step="1"
+            lineCap="round"
+            borderWidth="0"
+            rangeColor="#3F51B5"
+            pathColor="#B7BDE3"
+            showTooltip="false"
+          />
+        </div>
       </Container>
     </div>
   );
