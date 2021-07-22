@@ -1,12 +1,15 @@
 import {
   createStyles,
   Input,
+  TextField,
   Grid,
   makeStyles,
   Slider,
   Theme,
   Typography,
+  Container,
 } from "@material-ui/core";
+import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 import InputMask from "react-input-mask";
 import React from "react";
 
@@ -21,10 +24,14 @@ const maxDist = 50;
 const defaultDist = 5;
 
 const distanceMarks = [
+  // { value: 0.4, label: "400m" },
+  // { value: 0.8, label: "800m" },
+  { value: 1, label: "1km" },
+  // { value: 1.6, label: "1mi" },
   { value: 5, label: "5k" },
   { value: 10, label: "10k" },
-  { value: 21.1, label: "1/2 marathon" },
-  { value: 42.2, label: "marathon" },
+  { value: 21.1, label: "1/2 M" },
+  { value: 42.2, label: "M" },
 ];
 
 const twoDigit = (str: number) => str.toString().padStart(2, "0");
@@ -64,6 +71,9 @@ const useStyles = makeStyles((theme: Theme) =>
         textAlign: "right",
       },
     },
+    distToggle: {
+      width: 70,
+    },
   })
 );
 
@@ -89,23 +99,32 @@ function App() {
   return (
     <div className="App">
       <div>
-        <Typography id="dist-slider" gutterBottom>
-          Distance
-        </Typography>
         <Grid container spacing={2}>
-          <Grid item xs>
-            <Slider
-              min={minDist}
-              max={maxDist}
-              value={dist}
-              step={0.1}
-              valueLabelDisplay="auto"
-              marks={distanceMarks}
-              onChange={handleDistSliderChange}
-              aria-labelledby="dist-slider"
-            />
+          <Grid item xs={12}>
+            <Typography variant="h4">Distance</Typography>
           </Grid>
-          <Grid item>
+          <Grid item xs={12}>
+            <ToggleButtonGroup
+              value={dist}
+              exclusive
+              onChange={handleDistSliderChange}
+              aria-label="text formatting"
+            >
+              {distanceMarks.map(({ value, label }) => (
+                <ToggleButton
+                  key={value}
+                  value={value}
+                  aria-label={label}
+                  size="small"
+                  className={classes.distToggle}
+                >
+                  {label}
+                </ToggleButton>
+              ))}
+            </ToggleButtonGroup>
+          </Grid>
+
+          <Grid item xs={12}>
             <InputMask
               value={distToStr(dist)}
               mask="99.99"
@@ -114,7 +133,12 @@ function App() {
               onChange={(event) => setDist(strToDist(event.target.value))}
             >
               {(inputProps: any) => (
-                <Input {...inputProps} inputProps={inputAttrs} />
+                <TextField
+                  variant="outlined"
+                  size="small"
+                  {...inputProps}
+                  inputProps={inputAttrs}
+                />
               )}
             </InputMask>
           </Grid>
@@ -122,7 +146,7 @@ function App() {
       </div>
       <div>
         <Typography id="speed-slider" gutterBottom>
-          Speed
+          Pace
         </Typography>
         <Grid container spacing={2}>
           <Grid item xs>
@@ -145,7 +169,12 @@ function App() {
               onChange={(event) => setSpeed(strToSpeed(event.target.value))}
             >
               {(inputProps: any) => (
-                <Input {...inputProps} inputProps={inputAttrs} />
+                <TextField
+                  variant="outlined"
+                  size="small"
+                  {...inputProps}
+                  inputProps={inputAttrs}
+                />
               )}
             </InputMask>
           </Grid>
@@ -156,7 +185,7 @@ function App() {
           Time
         </Typography>
         <Grid container spacing={2}>
-          <Grid item xs>
+          <Grid item xs={12}>
             <Slider
               min={maxSpeed * dist}
               max={minSpeed * dist}
@@ -176,7 +205,12 @@ function App() {
               }
             >
               {(inputProps: any) => (
-                <Input {...inputProps} inputProps={inputAttrs} />
+                <TextField
+                  variant="outlined"
+                  size="small"
+                  {...inputProps}
+                  inputProps={inputAttrs}
+                />
               )}
             </InputMask>
           </Grid>
