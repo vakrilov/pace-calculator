@@ -1,9 +1,34 @@
 #root {
   display: flex;
   justify-content: center;
-  padding: 32px;
 }
 
 .App {
-  width: 800px;
+  width: 360px;
+  /* background-color: lightgray; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.pace-time {
+  position: relative;
+  margin-top: 20px;
+  /* background-color: lightgreen; */
+  width: 100%;
+}
+
+.pace-time-inputs {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -50%);
+}
+
+.pace-time-slider {
+  position: relative;
+  display: flex;
+  justify-content: center;
+
 }

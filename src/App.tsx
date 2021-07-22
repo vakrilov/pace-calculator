@@ -2,10 +2,8 @@ import {
   createStyles,
   TextField,
   makeStyles,
-  Slider,
   Theme,
   Typography,
-  Container,
 } from "@material-ui/core";
 import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 import InputMask from "react-input-mask";
@@ -17,9 +15,6 @@ import RoundSlider from "./RoundSlider";
 const minSpeed = 10 * 60;
 const maxSpeed = 2 * 60;
 const defaultSpeed = 5 * 60;
-
-const minDist = 1;
-const maxDist = 50;
 const defaultDist = 5;
 
 const distanceMarks = [
@@ -68,10 +63,11 @@ const useStyles = makeStyles((theme: Theme) =>
       width: 120,
       "& input": {
         textAlign: "right",
+        fontSize: "30px",
       },
     },
     distToggle: {
-      width: 70,
+      width: 60,
     },
   })
 );
@@ -82,112 +78,74 @@ function App() {
   const [dist, setDist] = React.useState<number>(defaultDist);
   const time = speed * dist;
 
-  const handleDistSliderChange = (event: any, newValue: any) => {
-    setDist(Number(newValue));
-  };
+  const PaceInput = () => (
+    <InputMask
+      value={speedToStr(speed)}
+      mask="99:99"
+      maskChar="0"
+      className={classes.input}
+      onChange={(event) => setSpeed(strToSpeed(event.target.value))}
+    >
+      {(inputProps: any) => (
+        <TextField {...inputProps} inputProps={inputAttrs} />
+      )}
+    </InputMask>
+  );
 
-  const handleSpeedSliderChange = (event: any, newValue: any) => {
-    setSpeed(Number(newValue));
-  };
-
-  const handleTimeSliderChange = (event: any, newValue: any) => {
-    const newTime = Number(newValue);
-    setSpeed(newTime / dist);
-  };
+  const TimeInput = () => (
+    <InputMask
+      value={timeToStr(time)}
+      mask="99:99:99"
+      maskChar="0"
+      className={classes.input}
+      onChange={(event) => setSpeed(strToTime(event.target.value) / dist)}
+    >
+      {(inputProps: any) => (
+        <TextField {...inputProps} inputProps={inputAttrs} />
+      )}
+    </InputMask>
+  );
 
   return (
     <div className="App">
-      <Container fixed>
-        <Typography variant="h5">Distance</Typography>
-        <ToggleButtonGroup
-          value={dist}
-          exclusive
-          onChange={handleDistSliderChange}
-          aria-label="text formatting"
-        >
-          {distanceMarks.map(({ value, label }) => (
-            <ToggleButton
-              key={value}
-              value={value}
-              aria-label={label}
-              size="small"
-              className={classes.distToggle}
-            >
-              {label}
-            </ToggleButton>
-          ))}
-        </ToggleButtonGroup>
-
-        <div>
-          <InputMask
-            value={distToStr(dist)}
-            mask="99.99"
-            maskChar="0"
-            className={classes.input}
-            onChange={(event) => setDist(strToDist(event.target.value))}
+      <Typography variant="h5">Distance</Typography>
+      <ToggleButtonGroup
+        value={dist}
+        exclusive
+        onChange={(event: any, value: any) => setDist(Number(value))}
+      >
+        {distanceMarks.map(({ value, label }) => (
+          <ToggleButton
+            key={value}
+            value={value}
+            aria-label={label}
+            size="small"
+            className={classes.distToggle}
           >
-            {(inputProps: any) => (
-              <TextField
-                variant="outlined"
-                size="small"
-                {...inputProps}
-                inputProps={inputAttrs}
-              />
-            )}
-          </InputMask>
-        </div>
+            {label}
+          </ToggleButton>
+        ))}
+      </ToggleButtonGroup>
 
-        <Typography variant="h5">Pace</Typography>
-        <Slider
-          min={maxSpeed}
-          max={minSpeed}
-          value={speed}
-          valueLabelDisplay="auto"
-          valueLabelFormat={speedToStr}
-          onChange={handleSpeedSliderChange}
-          aria-labelledby="speed-slider"
-        />
-        <InputMask
-          value={speedToStr(speed)}
-          mask="99:99"
-          maskChar="0"
-          className={classes.input}
-          onChange={(event) => setSpeed(strToSpeed(event.target.value))}
-        >
-          {(inputProps: any) => (
-            <TextField
-              variant="outlined"
-              size="small"
-              {...inputProps}
-              inputProps={inputAttrs}
-            />
-          )}
-        </InputMask>
-        <Typography variant="h5">Time</Typography>
-        <Slider
-          min={maxSpeed * dist}
-          max={minSpeed * dist}
-          value={time}
-          onChange={handleTimeSliderChange}
-          aria-labelledby="time-slider"
-        />
-        <InputMask
-          value={timeToStr(time)}
-          mask="99:99:99"
-          maskChar="0"
-          className={classes.input}
-          onChange={(event) => setSpeed(strToTime(event.target.value) / dist)}
-        >
-          {(inputProps: any) => (
-            <TextField
-              variant="outlined"
-              size="small"
-              {...inputProps}
-              inputProps={inputAttrs}
-            />
-          )}
-        </InputMask>
-        <div>
+      <InputMask
+        value={distToStr(dist)}
+        mask="99.99"
+        maskChar="0"
+        className={classes.input}
+        onChange={(event) => setDist(strToDist(event.target.value))}
+      >
+        {(inputProps: any) => (
+          <TextField
+            variant="outlined"
+            size="small"
+            {...inputProps}
+            inputProps={inputAttrs}
+          />
+        )}
+      </InputMask>
+
+      <div className="pace-time">
+        <div className="pace-time-slider">
           <RoundSlider
             sliderType="min-range"
             update={(e: { value: any }) => setSpeed(Number(e.value))}
@@ -208,7 +166,12 @@ function App() {
             showTooltip="false"
           />
         </div>
-      </Container>
+
+        <div className="pace-time-inputs">
+          <PaceInput />
+          <TimeInput />
+        </div>
+      </div>
     </div>
   );
 }
