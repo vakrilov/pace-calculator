@@ -47,9 +47,7 @@ const formatTime = (time: number): string => {
   const mins = Math.floor(time / 60) % 60;
   const hours = Math.floor(time / 3600);
 
-  return `${hours ? hours + "h " : ""}${twoDigit(mins)}min ${twoDigit(
-    secs
-  )}sec`;
+  return `${hours ? hours + "h " : ""}${mins}min ${secs}sec`;
 };
 
 const inputAttrs = { inputMode: "decimal" };
@@ -161,18 +159,24 @@ function App() {
         </div>
 
         <div className="pace-time-inputs">
-          <div>{formatSpeed(speed)}</div>
           <div>{formatTime(time)}</div>
-          {/* <div>{speed.toFixed(2)}</div>
-          <div>{time.toFixed(2)}</div> */}
+          with
+          <div>{formatSpeed(speed)}</div>
+        </div>
 
+        <div className="go-faster">
           <Button onClick={goDown} variant="outlined">
             -
           </Button>
+        </div>
+        <div className="go-slower">
           <Button onClick={goUp} variant="outlined">
             +
           </Button>
         </div>
+
+        <div className="slow">slow</div>
+        <div className="fast">fast</div>
       </div>
     </div>
   );
