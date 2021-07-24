@@ -2,6 +2,7 @@ import {
   createStyles,
   TextField,
   makeStyles,
+  Button,
   Theme,
   Typography,
 } from "@material-ui/core";
@@ -33,27 +34,22 @@ const twoDigit = (str: number) => str.toString().padStart(2, "0");
 const strToDist = (str: string): number => (str === "" ? 0 : Number(str));
 const distToStr = (val: number): string => val.toFixed(2).padStart(5, "0");
 
-const strToSpeed = (str: string): number => {
-  const [mins, secs] = str.split(":");
-  return Number(mins) * 60 + Number(secs);
-};
-const speedToStr = (val: number): string => {
-  const secs = val % 60;
+const formatSpeed = (val: number): string => {
+  const ms = Math.round((val * 100) % 100);
+  const secs = Math.floor(val % 60);
   const mins = Math.floor(val / 60);
-  return `${twoDigit(mins)}:${twoDigit(secs)}`;
+  return `${mins}:${twoDigit(secs)}.${twoDigit(ms)} min/km`;
 };
 
-const timeToStr = (time: number): string => {
+const formatTime = (time: number): string => {
   time = Math.round(time);
   const secs = time % 60;
   const mins = Math.floor(time / 60) % 60;
   const hours = Math.floor(time / 3600);
 
-  return `${twoDigit(hours)}:${twoDigit(mins)}:${twoDigit(secs)}}`;
-};
-const strToTime = (str: string): number => {
-  const [hours, mins, secs] = str.split(":");
-  return Number(hours) * 3600 + Number(mins) * 60 + Number(secs);
+  return `${hours ? hours + "h " : ""}${twoDigit(mins)}min ${twoDigit(
+    secs
+  )}sec`;
 };
 
 const inputAttrs = { inputMode: "decimal" };
@@ -72,39 +68,36 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+const getTimeStep = (dist: number) => {
+  if (dist < 10) return 5;
+  if (dist < 25) return 10;
+  return 30;
+};
+const round2 = (num: number) => Math.round(num * 100) / 100;
+
 function App() {
   const classes = useStyles();
   const [speed, setSpeed] = React.useState<number>(defaultSpeed); // in seconds per KM
   const [dist, setDist] = React.useState<number>(defaultDist);
   const time = speed * dist;
 
-  const PaceInput = () => (
-    <InputMask
-      value={speedToStr(speed)}
-      mask="99:99"
-      maskChar="0"
-      className={classes.input}
-      onChange={(event) => setSpeed(strToSpeed(event.target.value))}
-    >
-      {(inputProps: any) => (
-        <TextField {...inputProps} inputProps={inputAttrs} />
-      )}
-    </InputMask>
-  );
+  const goUp = () => {
+    const changeSpeed = Math.floor(speed + 1);
 
-  const TimeInput = () => (
-    <InputMask
-      value={timeToStr(time)}
-      mask="99:99:99"
-      maskChar="0"
-      className={classes.input}
-      onChange={(event) => setSpeed(strToTime(event.target.value) / dist)}
-    >
-      {(inputProps: any) => (
-        <TextField {...inputProps} inputProps={inputAttrs} />
-      )}
-    </InputMask>
-  );
+    const timeStep = getTimeStep(dist);
+    const changeTime = (Math.floor(round2(time) / timeStep) + 1) * timeStep;
+
+    setSpeed(Math.min(changeSpeed, changeTime / dist));
+  };
+
+  const goDown = () => {
+    const changeSpeed = Math.ceil(speed - 1);
+
+    const timeStep = getTimeStep(dist);
+    const changeTime = (Math.ceil(round2(time) / timeStep) - 1) * timeStep;
+
+    setSpeed(Math.max(changeSpeed, changeTime / dist));
+  };
 
   return (
     <div className="App">
@@ -168,8 +161,17 @@ function App() {
         </div>
 
         <div className="pace-time-inputs">
-          <PaceInput />
-          <TimeInput />
+          <div>{formatSpeed(speed)}</div>
+          <div>{formatTime(time)}</div>
+          {/* <div>{speed.toFixed(2)}</div>
+          <div>{time.toFixed(2)}</div> */}
+
+          <Button onClick={goDown} variant="outlined">
+            -
+          </Button>
+          <Button onClick={goUp} variant="outlined">
+            +
+          </Button>
         </div>
       </div>
     </div>
