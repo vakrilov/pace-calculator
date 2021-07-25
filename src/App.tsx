@@ -2,15 +2,18 @@ import {
   createStyles,
   TextField,
   makeStyles,
-  Button,
+  IconButton,
   Theme,
   Typography,
 } from "@material-ui/core";
+import { green, red } from '@material-ui/core/colors';
 import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 import InputMask from "react-input-mask";
 import React from "react";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeftRounded";
+import ChevronRightIcon from "@material-ui/icons/ChevronRightRounded";
 
-import "./App.css";
+import "./App.scss";
 import RoundSlider from "./RoundSlider";
 
 const minSpeed = 10 * 60;
@@ -165,14 +168,14 @@ function App() {
         </div>
 
         <div className="go-faster">
-          <Button onClick={goDown} variant="outlined">
-            -
-          </Button>
+          <IconButton onClick={goDown} style={{ color: green[300] }}>
+            <ChevronLeftIcon />
+          </IconButton>
         </div>
         <div className="go-slower">
-          <Button onClick={goUp} variant="outlined">
-            +
-          </Button>
+          <IconButton onClick={goUp} style={{ color: red[300] }}>
+            <ChevronRightIcon />
+          </IconButton>
         </div>
 
         <div className="slow">slow</div>
