@@ -204,12 +204,12 @@ function App() {
 
           <div className="go-faster">
             <IconButton onClick={goDown}>
-              <AddIcon />
+              <RemoveIcon />
             </IconButton>
           </div>
           <div className="go-slower">
             <IconButton onClick={goUp}>
-              <RemoveIcon />
+              <AddIcon />
             </IconButton>
           </div>
 
