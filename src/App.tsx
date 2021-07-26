@@ -6,7 +6,7 @@ import {
   Theme,
   Typography,
 } from "@material-ui/core";
-import { green, red } from '@material-ui/core/colors';
+import { green, red } from "@material-ui/core/colors";
 import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 import InputMask from "react-input-mask";
 import React from "react";
@@ -37,20 +37,32 @@ const twoDigit = (str: number) => str.toString().padStart(2, "0");
 const strToDist = (str: string): number => (str === "" ? 0 : Number(str));
 const distToStr = (val: number): string => val.toFixed(2).padStart(5, "0");
 
-const formatSpeed = (val: number): string => {
+const formatSpeed = (val: number) => {
   const ms = Math.round((val * 100) % 100);
   const secs = Math.floor(val % 60);
   const mins = Math.floor(val / 60);
-  return `${mins}:${twoDigit(secs)}.${twoDigit(ms)} min/km`;
+  // return `${mins}:${twoDigit(secs)}.${twoDigit(ms)} min/km`;
+  return {
+    mins: mins.toString(),
+    secs: twoDigit(secs),
+    ms: twoDigit(ms),
+    metric: "min/km",
+  };
 };
 
-const formatTime = (time: number): string => {
+const formatTime = (time: number) => {
   time = Math.round(time);
   const secs = time % 60;
   const mins = Math.floor(time / 60) % 60;
   const hours = Math.floor(time / 3600);
 
-  return `${hours ? hours + "h " : ""}${mins}min ${secs}sec`;
+  // return `${hours ? hours + "h " : ""}${mins}min ${secs}sec`;
+
+  return {
+    hours: hours + "",
+    mins: hours ? twoDigit(mins) : mins.toString(),
+    secs: twoDigit(secs),
+  };
 };
 
 const inputAttrs = { inputMode: "decimal" };
@@ -99,6 +111,9 @@ function App() {
 
     setSpeed(Math.max(changeSpeed, changeTime / dist));
   };
+
+  const timeFmt = formatTime(time);
+  const speedFmt = formatSpeed(speed);
 
   return (
     <div className="App">
@@ -162,9 +177,25 @@ function App() {
         </div>
 
         <div className="pace-time-inputs">
-          <div>{formatTime(time)}</div>
-          with
-          <div>{formatSpeed(speed)}</div>
+          <div>
+            {timeFmt.hours !== "0" && (
+              <>
+                <span className="digit">{timeFmt.hours}</span>
+                <span className="metric">h </span>
+              </>
+            )}
+            <span className="digit">{timeFmt.mins}</span>
+            <span className="metric">m </span>
+            <span className="digit">{timeFmt.secs}</span>
+            <span className="metric">s</span>
+          </div>
+          <span className="metric">with</span>
+          <div>
+            <span className="digit">{speedFmt.mins}</span>
+            <span className="metric">m </span>
+            <span className="digit">{speedFmt.secs}</span>
+            <span className="metric">s</span>
+          </div>
         </div>
 
         <div className="go-faster">
