@@ -1,23 +1,25 @@
 #root {
   display: flex;
   justify-content: center;
-  font-family: 'Titillium Web', sans-serif;
+  font-family: "Titillium Web", sans-serif;
 }
 
 .App {
   width: 360px;
-  padding: 24px 0;
-  /* background-color: lightgray; */
+  // background-color: lightgray;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
+.header {
+  font-size: 36px;
+  font-weight: 300;
+}
+
 .pace-time {
   position: relative;
-  margin-top: 20px;
-  /* background-color: lightgreen; */
   width: 100%;
 }
 
@@ -41,6 +43,7 @@
   position: absolute;
   bottom: 6%;
   font-size: 28px;
+  font-weight: 300;
 }
 
 .fast {
@@ -58,18 +61,17 @@
   transform: translateY(-50%);
 
   svg {
-    font-size: 72px;
+    font-size: 60px;
   }
 }
 
-$btn-offset: 16px;
+$btn-offset: 20px;
 .go-faster {
   left: $btn-offset;
 }
 .go-slower {
   right: $btn-offset;
 }
-
 
 .digit {
   font-size: 32px;

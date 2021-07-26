@@ -4,14 +4,14 @@ import {
   makeStyles,
   IconButton,
   Theme,
-  Typography,
+  createTheme,
+  ThemeProvider,
 } from "@material-ui/core";
-import { green, red } from "@material-ui/core/colors";
 import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 import InputMask from "react-input-mask";
 import React from "react";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeftRounded";
-import ChevronRightIcon from "@material-ui/icons/ChevronRightRounded";
+import AddIcon from "@material-ui/icons/Add";
+import RemoveIcon from "@material-ui/icons/Remove";
 
 import "./App.scss";
 import RoundSlider from "./RoundSlider";
@@ -41,7 +41,7 @@ const formatSpeed = (val: number) => {
   const ms = Math.round((val * 100) % 100);
   const secs = Math.floor(val % 60);
   const mins = Math.floor(val / 60);
-  // return `${mins}:${twoDigit(secs)}.${twoDigit(ms)} min/km`;
+
   return {
     mins: mins.toString(),
     secs: twoDigit(secs),
@@ -56,8 +56,6 @@ const formatTime = (time: number) => {
   const mins = Math.floor(time / 60) % 60;
   const hours = Math.floor(time / 3600);
 
-  // return `${hours ? hours + "h " : ""}${mins}min ${secs}sec`;
-
   return {
     hours: hours + "",
     mins: hours ? twoDigit(mins) : mins.toString(),
@@ -65,14 +63,21 @@ const formatTime = (time: number) => {
   };
 };
 
+const theme = createTheme({
+  typography: {
+    fontFamily: ["Titillium Web", "sans-serif"].join(","),
+  },
+});
+
 const inputAttrs = { inputMode: "decimal" };
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     input: {
-      width: 120,
+      marginTop: "12px",
+      width: 80,
       "& input": {
         textAlign: "right",
-        fontSize: "30px",
+        fontSize: "32px",
       },
     },
     distToggle: {
@@ -116,103 +121,103 @@ function App() {
   const speedFmt = formatSpeed(speed);
 
   return (
-    <div className="App">
-      <Typography variant="h5">Distance</Typography>
-      <ToggleButtonGroup
-        value={dist}
-        exclusive
-        onChange={(event: any, value: any) => setDist(Number(value))}
-      >
-        {distanceMarks.map(({ value, label }) => (
-          <ToggleButton
-            key={value}
-            value={value}
-            aria-label={label}
-            size="small"
-            className={classes.distToggle}
-          >
-            {label}
-          </ToggleButton>
-        ))}
-      </ToggleButtonGroup>
+    <ThemeProvider theme={theme}>
+      <div className="App">
+        <h1 className="header">Distance</h1>
 
-      <InputMask
-        value={distToStr(dist)}
-        mask="99.99"
-        maskChar="0"
-        className={classes.input}
-        onChange={(event) => setDist(strToDist(event.target.value))}
-      >
-        {(inputProps: any) => (
-          <TextField
-            variant="outlined"
-            size="small"
-            {...inputProps}
-            inputProps={inputAttrs}
-          />
-        )}
-      </InputMask>
+        <ToggleButtonGroup
+          value={dist}
+          exclusive
+          onChange={(event: any, value: any) => setDist(Number(value))}
+        >
+          {distanceMarks.map(({ value, label }) => (
+            <ToggleButton
+              key={value}
+              value={value}
+              aria-label={label}
+              size="small"
+              className={classes.distToggle}
+            >
+              {label}
+            </ToggleButton>
+          ))}
+        </ToggleButtonGroup>
 
-      <div className="pace-time">
-        <div className="pace-time-slider">
-          <RoundSlider
-            sliderType="min-range"
-            update={(e: { value: any }) => setSpeed(Number(e.value))}
-            value={speed}
-            startAngle="320"
-            endAngle="220"
-            radius="160"
-            width="6"
-            handleSize="+24"
-            animation="false"
-            min={maxSpeed}
-            max={minSpeed}
-            step="1"
-            lineCap="round"
-            borderWidth="0"
-            rangeColor="#3F51B5"
-            pathColor="#B7BDE3"
-            showTooltip="false"
-          />
-        </div>
+        <InputMask
+          value={distToStr(dist)}
+          mask="99.99"
+          maskChar="0"
+          className={classes.input}
+          onChange={(event) => setDist(strToDist(event.target.value))}
+        >
+          {(inputProps: any) => (
+            <TextField size="small" {...inputProps} inputProps={inputAttrs} />
+          )}
+        </InputMask>
 
-        <div className="pace-time-inputs">
-          <div>
-            {timeFmt.hours !== "0" && (
-              <>
-                <span className="digit">{timeFmt.hours}</span>
-                <span className="metric">h </span>
-              </>
-            )}
-            <span className="digit">{timeFmt.mins}</span>
-            <span className="metric">m </span>
-            <span className="digit">{timeFmt.secs}</span>
-            <span className="metric">s</span>
+        <h1 className="header">Pace and Time</h1>
+
+        <div className="pace-time">
+          <div className="pace-time-slider">
+            <RoundSlider
+              sliderType="min-range"
+              update={(e: { value: any }) => setSpeed(Number(e.value))}
+              value={speed}
+              startAngle="320"
+              endAngle="220"
+              radius="160"
+              width="6"
+              handleSize="+24"
+              animation="false"
+              min={maxSpeed}
+              max={minSpeed}
+              step="1"
+              lineCap="round"
+              borderWidth="0"
+              rangeColor="#3F51B5"
+              pathColor="#B7BDE3"
+              showTooltip="false"
+            />
           </div>
-          <span className="metric">with</span>
-          <div>
-            <span className="digit">{speedFmt.mins}</span>
-            <span className="metric">m </span>
-            <span className="digit">{speedFmt.secs}</span>
-            <span className="metric">s</span>
+
+          <div className="pace-time-inputs">
+            <div>
+              {timeFmt.hours !== "0" && (
+                <>
+                  <span className="digit">{timeFmt.hours}</span>
+                  <span className="metric">h </span>
+                </>
+              )}
+              <span className="digit">{timeFmt.mins}</span>
+              <span className="metric">m </span>
+              <span className="digit">{timeFmt.secs}</span>
+              <span className="metric">s</span>
+            </div>
+            <span className="metric">with</span>
+            <div>
+              <span className="digit">{speedFmt.mins}</span>
+              <span className="metric">m </span>
+              <span className="digit">{speedFmt.secs}</span>
+              <span className="metric">s</span>
+            </div>
           </div>
-        </div>
 
-        <div className="go-faster">
-          <IconButton onClick={goDown} style={{ color: green[300] }}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>
-        <div className="go-slower">
-          <IconButton onClick={goUp} style={{ color: red[300] }}>
-            <ChevronRightIcon />
-          </IconButton>
-        </div>
+          <div className="go-faster">
+            <IconButton onClick={goDown}>
+              <AddIcon />
+            </IconButton>
+          </div>
+          <div className="go-slower">
+            <IconButton onClick={goUp}>
+              <RemoveIcon />
+            </IconButton>
+          </div>
 
-        <div className="slow">slow</div>
-        <div className="fast">fast</div>
+          <div className="slow">slow</div>
+          <div className="fast">fast</div>
+        </div>
       </div>
-    </div>
+    </ThemeProvider>
   );
 }
 
