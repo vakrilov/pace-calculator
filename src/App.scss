@@ -6,7 +6,6 @@
 
 .App {
   width: 360px;
-  // background-color: lightgray;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -16,6 +15,7 @@
 .header {
   font-size: 36px;
   font-weight: 300;
+  margin-bottom: 12px;;
 }
 
 .pace-time {
@@ -44,12 +44,11 @@
   bottom: 6%;
   font-size: 28px;
   font-weight: 300;
+  user-select: none;
 }
-
 .fast {
   left: 12%;
 }
-
 .slow {
   right: 12%;
 }

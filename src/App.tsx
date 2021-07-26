@@ -81,7 +81,8 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     distToggle: {
-      width: 60,
+      width: 64,
+      fontSize: "18px"
     },
   })
 );
@@ -203,12 +204,12 @@ function App() {
           </div>
 
           <div className="go-faster">
-            <IconButton onClick={goDown}>
+            <IconButton onClick={goDown} color="primary">
               <RemoveIcon />
             </IconButton>
           </div>
           <div className="go-slower">
-            <IconButton onClick={goUp}>
+            <IconButton onClick={goUp} color="primary">
               <AddIcon />
             </IconButton>
           </div>
