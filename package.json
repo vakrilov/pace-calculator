@@ -1,6 +1,5 @@
 {
   "name": "pace-calculator",
-  "homepage": "https://vakrilov.github.io/pace-calculator/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
