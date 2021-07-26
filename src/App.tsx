@@ -16,37 +16,51 @@ import RemoveIcon from "@material-ui/icons/Remove";
 import "./App.scss";
 import RoundSlider from "./RoundSlider";
 
+const mileToKm = 1.609344;
+
 const minSpeed = 10 * 60;
 const maxSpeed = 2 * 60;
 const defaultSpeed = 5 * 60;
 const defaultDist = 5;
 
 const distanceMarks = [
-  // { value: 0.4, label: "400m" },
-  // { value: 0.8, label: "800m" },
-  { value: 1, label: "1km" },
-  // { value: 1.6, label: "1mi" },
+  { value: mileToKm, label: "1mi" },
   { value: 5, label: "5k" },
   { value: 10, label: "10k" },
   { value: 21.1, label: "1/2 M" },
   { value: 42.2, label: "M" },
 ];
 
-const twoDigit = (str: number) => str.toString().padStart(2, "0");
+const twoDigit = (str: number) => str.toFixed(0).padStart(2, "0");
 
-const strToDist = (str: string): number => (str === "" ? 0 : Number(str));
-const distToStr = (val: number): string => val.toFixed(2).padStart(5, "0");
+const strToDist = (str: string, unit: DistanceUnit): number => {
+  let result = defaultDist;
+  if (str) {
+    result = Number(str);
+  }
 
-const formatSpeed = (val: number) => {
-  const ms = Math.round((val * 100) % 100);
+  return unit === "mi" ? result * mileToKm : result;
+};
+
+const distToStr = (val: number, unit: DistanceUnit): string => {
+  val = unit === "mi" ? val / mileToKm : val;
+
+  return val.toFixed(2).padStart(5, "0");
+};
+
+const formatSpeed = (val: number, unit: DistanceUnit) => {
+  val *= unit === "mi" ? mileToKm : 1;
+  val = Math.round(val * 100) / 100;
+
+  const cent = (val * 100) % 100;
   const secs = Math.floor(val % 60);
   const mins = Math.floor(val / 60);
 
   return {
     mins: mins.toString(),
     secs: twoDigit(secs),
-    ms: twoDigit(ms),
-    metric: "min/km",
+    cents: twoDigit(cent),
+    unit: unit === "mi" ? "min/mi" : "min/km",
   };
 };
 
@@ -82,10 +96,20 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     distToggle: {
       width: 64,
-      fontSize: "18px"
+      fontSize: "18px",
+    },
+    unitGroup: {
+      verticalAlign: "bottom",
+      marginLeft: "12px",
+    },
+    unitToggle: {
+      width: 64,
+      fontSize: "18px",
     },
   })
 );
+
+type DistanceUnit = "km" | "mi";
 
 const getTimeStep = (dist: number) => {
   if (dist < 10) return 5;
@@ -98,10 +122,17 @@ function App() {
   const classes = useStyles();
   const [speed, setSpeed] = React.useState<number>(defaultSpeed); // in seconds per KM
   const [dist, setDist] = React.useState<number>(defaultDist);
+  const [unit, setUnit] = React.useState<DistanceUnit>("km");
   const time = speed * dist;
 
   const goUp = () => {
-    const changeSpeed = Math.floor(speed + 1);
+    let changeSpeed = 0;
+    if (unit === "mi") {
+      const speedInMiles = round2(speed * mileToKm);
+      changeSpeed = Math.floor(speedInMiles + 1) / mileToKm;
+    } else {
+      changeSpeed = Math.floor(speed + 1);
+    }
 
     const timeStep = getTimeStep(dist);
     const changeTime = (Math.floor(round2(time) / timeStep) + 1) * timeStep;
@@ -110,7 +141,13 @@ function App() {
   };
 
   const goDown = () => {
-    const changeSpeed = Math.ceil(speed - 1);
+    let changeSpeed = 0;
+    if (unit === "mi") {
+      const speedInMiles = round2(speed * mileToKm);
+      changeSpeed = Math.ceil(speedInMiles - 1) / mileToKm;
+    } else {
+      changeSpeed = Math.ceil(speed - 1);
+    }
 
     const timeStep = getTimeStep(dist);
     const changeTime = (Math.ceil(round2(time) / timeStep) - 1) * timeStep;
@@ -119,7 +156,7 @@ function App() {
   };
 
   const timeFmt = formatTime(time);
-  const speedFmt = formatSpeed(speed);
+  const speedFmt = formatSpeed(speed, unit);
 
   return (
     <ThemeProvider theme={theme}>
@@ -128,8 +165,9 @@ function App() {
 
         <ToggleButtonGroup
           value={dist}
+          defaultValue={defaultDist}
           exclusive
-          onChange={(event: any, value: any) => setDist(Number(value))}
+          onChange={(event: any, value: any) => value && setDist(Number(value))}
         >
           {distanceMarks.map(({ value, label }) => (
             <ToggleButton
@@ -144,17 +182,44 @@ function App() {
           ))}
         </ToggleButtonGroup>
 
-        <InputMask
-          value={distToStr(dist)}
-          mask="99.99"
-          maskChar="0"
-          className={classes.input}
-          onChange={(event) => setDist(strToDist(event.target.value))}
-        >
-          {(inputProps: any) => (
-            <TextField size="small" {...inputProps} inputProps={inputAttrs} />
-          )}
-        </InputMask>
+        <div>
+          <InputMask
+            value={distToStr(dist, unit)}
+            mask="99.99"
+            maskChar="0"
+            className={classes.input}
+            onChange={(event) => setDist(strToDist(event.target.value, unit))}
+          >
+            {(inputProps: any) => (
+              <TextField size="small" {...inputProps} inputProps={inputAttrs} />
+            )}
+          </InputMask>
+
+          <ToggleButtonGroup
+            value={unit}
+            defaultValue="km"
+            exclusive
+            className={classes.unitGroup}
+            onChange={(event: any, value: any) => value && setUnit(value)}
+          >
+            <ToggleButton
+              value="km"
+              aria-label="km"
+              size="small"
+              className={classes.unitToggle}
+            >
+              km
+            </ToggleButton>
+            <ToggleButton
+              value="mi"
+              aria-label="mile"
+              size="small"
+              className={classes.unitToggle}
+            >
+              mile
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </div>
 
         <h1 className="header">Pace and Time</h1>
 
@@ -168,7 +233,7 @@ function App() {
               endAngle="220"
               radius="160"
               width="6"
-              handleSize="+24"
+              handleSize="36"
               animation="false"
               min={maxSpeed}
               max={minSpeed}
@@ -197,9 +262,10 @@ function App() {
             <span className="metric">with</span>
             <div>
               <span className="digit">{speedFmt.mins}</span>
-              <span className="metric">m </span>
+              <span className="digit">:</span>
               <span className="digit">{speedFmt.secs}</span>
-              <span className="metric">s</span>
+              <sup className="metric">{speedFmt.cents}</sup>
+              <span className="metric"> {speedFmt.unit}</span>
             </div>
           </div>
 
