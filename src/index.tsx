@@ -4,6 +4,11 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+window.addEventListener("scroll", (e) => {
+  e.preventDefault();
+  window.scrollTo(0, 0);
+});
+
 ReactDOM.render(
   <React.StrictMode>
     <App />
