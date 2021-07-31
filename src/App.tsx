@@ -283,6 +283,7 @@ function App() {
           <div className="slow">slow</div>
           <div className="fast">fast</div>
         </div>
+        <div id="copyright">© 2021 Alexander Vakrilov</div>
       </div>
     </ThemeProvider>
   );
