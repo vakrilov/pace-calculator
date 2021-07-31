@@ -225,23 +225,24 @@ function App() {
 
         <div className="pace-time">
           <div className="pace-time-slider">
+            {/* use negative values to "reverse" the slider */}
             <RoundSlider
               sliderType="min-range"
-              update={(e: { value: any }) => setSpeed(Number(e.value))}
-              value={speed}
-              startAngle="320"
-              endAngle="220"
+              update={(e: { value: any }) => setSpeed(-Number(e.value))}
+              value={-speed}
+              startAngle="140"
+              endAngle="40"
               radius="160"
               width="6"
               handleSize="36"
               animation="false"
-              min={maxSpeed}
-              max={minSpeed}
+              min={-minSpeed}
+              max={-maxSpeed}
               step="1"
               lineCap="round"
               borderWidth="0"
-              rangeColor="#3F51B5"
-              pathColor="#B7BDE3"
+              rangeColor="#B7BDE3"
+              pathColor="#3F51B5"
               showTooltip="false"
             />
           </div>

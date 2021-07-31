@@ -21,6 +21,7 @@
 .pace-time {
   position: relative;
   width: 100%;
+  margin-bottom: 12px;
 }
 
 .pace-time-inputs {
@@ -41,7 +42,7 @@
 .fast,
 .slow {
   position: absolute;
-  bottom: 6%;
+  top: 2%;
   font-size: 28px;
   font-weight: 300;
   user-select: none;
