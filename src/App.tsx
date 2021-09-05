@@ -127,34 +127,36 @@ function App() {
   const [unit, setUnit] = React.useState<DistanceUnit>("km");
   const time = speed * dist;
 
-  const goUp = () => {
-    let changeSpeed = 0;
-    if (unit === "mi") {
-      const speedInMiles = round2(speed * mileToKm);
-      changeSpeed = Math.floor(speedInMiles + 1) / mileToKm;
-    } else {
-      changeSpeed = Math.floor(speed + 1);
-    }
-
+  const goUpTime = () => {
     const timeStep = getTimeStep(dist);
     const changeTime = (Math.floor(round2(time) / timeStep) + 1) * timeStep;
 
-    setSpeed(Math.min(changeSpeed, changeTime / dist));
+    setSpeed(changeTime / dist);
   };
 
-  const goDown = () => {
-    let changeSpeed = 0;
-    if (unit === "mi") {
-      const speedInMiles = round2(speed * mileToKm);
-      changeSpeed = Math.ceil(speedInMiles - 1) / mileToKm;
-    } else {
-      changeSpeed = Math.ceil(speed - 1);
-    }
-
+  const goDownTime = () => {
     const timeStep = getTimeStep(dist);
     const changeTime = (Math.ceil(round2(time) / timeStep) - 1) * timeStep;
 
-    setSpeed(Math.max(changeSpeed, changeTime / dist));
+    setSpeed(changeTime / dist);
+  };
+
+  const goUpSpeed = () => {
+    if (unit === "mi") {
+      const speedInMiles = round2(speed * mileToKm);
+      setSpeed(Math.floor(speedInMiles + 1) / mileToKm);
+    } else {
+      setSpeed(Math.floor(speed + 1));
+    }
+  };
+
+  const goDownSpeed = () => {
+    if (unit === "mi") {
+      const speedInMiles = round2(speed * mileToKm);
+      setSpeed(Math.ceil(speedInMiles - 1) / mileToKm);
+    } else {
+      setSpeed(Math.ceil(speed - 1));
+    }
   };
 
   const timeFmt = formatTime(time);
@@ -253,7 +255,7 @@ function App() {
             <TimerIcon fontSize="large" color="primary" />
             <div className="time-container">
               <IconButton
-                onClick={goDown}
+                onClick={goDownTime}
                 color="primary"
                 className="go-faster"
               >
@@ -272,14 +274,18 @@ function App() {
                 <span className="metric">s</span>
               </div>
 
-              <IconButton onClick={goUp} color="primary" className="go-slower">
+              <IconButton
+                onClick={goUpTime}
+                color="primary"
+                className="go-slower"
+              >
                 <AddIcon />
               </IconButton>
             </div>
             <hr></hr>
             <div className="pace-container">
               <IconButton
-                onClick={goDown}
+                onClick={goDownSpeed}
                 color="primary"
                 className="go-faster"
               >
@@ -292,7 +298,11 @@ function App() {
                 <sup className="metric">{speedFmt.cents}</sup>
                 <span className="metric"> {speedFmt.unit}</span>
               </div>
-              <IconButton onClick={goUp} color="primary" className="go-slower">
+              <IconButton
+                onClick={goUpSpeed}
+                color="primary"
+                className="go-slower"
+              >
                 <AddIcon />
               </IconButton>
             </div>
