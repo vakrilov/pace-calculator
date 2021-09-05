@@ -252,7 +252,11 @@ function App() {
           </div>
 
           <div className="pace-time-inputs">
-            <TimerIcon fontSize="large" color="primary" />
+            <TimerIcon
+              fontSize="large"
+              htmlColor="#404040"
+              style={{ marginBottom: "-8px" }}
+            />
             <div className="time-container">
               <IconButton
                 onClick={goDownTime}
@@ -306,7 +310,11 @@ function App() {
                 <AddIcon />
               </IconButton>
             </div>
-            <SpeedIcon fontSize="large" color="primary" />
+            <SpeedIcon
+              fontSize="large"
+              htmlColor="#404040"
+              style={{ marginTop: "-8px" }}
+            />
           </div>
 
           <div className="slow">slow</div>
