@@ -12,11 +12,16 @@
   align-items: center;
 }
 
-.header {
-  font-size: 36px;
-  font-weight: 300;
-  margin-top: 12px;
+.distance-header,
+.pace-time-header {
+  font-size: 32px;
+  font-weight: 700;
+  margin-top: 16px;
   margin-bottom: 12px;
+}
+
+.pace-time-header {
+  margin-top: 24px;
 }
 
 .pace-time {
@@ -28,7 +33,7 @@
 .pace-time-inputs {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 54%;
   transform: translate(-50%, -50%);
   text-align: center;
   font-size: 18px;
@@ -55,34 +60,38 @@
   right: 12%;
 }
 
+.time-container,
+.pace-container {
+  position: relative;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .go-faster,
 .go-slower {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-
   svg {
-    font-size: 60px;
+    font-size: 36px;
   }
 }
 
-$btn-offset: 20px;
-.go-faster {
-  left: $btn-offset;
-}
-.go-slower {
-  right: $btn-offset;
-}
-
 .digit {
-  font-size: 32px;
+  font-size: 28px;
 }
 
 .metric {
   font-size: 20px;
+  align-self: baseline;
 }
 
 #copyright {
   position: fixed;
+  font-size: 12px;
   bottom: 12px;
+}
+
+hr {
+  border-top: 1px solid #b8bde0;
+  margin: 4px 12px;
 }

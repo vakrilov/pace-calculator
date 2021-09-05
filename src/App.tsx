@@ -12,6 +12,8 @@ import InputMask from "react-input-mask";
 import React from "react";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
+import TimerIcon from "@material-ui/icons/Timer";
+import SpeedIcon from "@material-ui/icons/SpeedRounded";
 
 import "./App.scss";
 import RoundSlider from "./RoundSlider";
@@ -45,7 +47,7 @@ const strToDist = (str: string, unit: DistanceUnit): number => {
 const distToStr = (val: number, unit: DistanceUnit): string => {
   val = unit === "mi" ? val / mileToKm : val;
 
-  return val.toFixed(2).padStart(5, "0");
+  return val.toFixed(2).padStart(6, "0");
 };
 
 const formatSpeed = (val: number, unit: DistanceUnit) => {
@@ -88,7 +90,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     input: {
       marginTop: "12px",
-      width: 80,
+      width: 100,
       "& input": {
         textAlign: "right",
         fontSize: "32px",
@@ -161,7 +163,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <div className="App">
-        <h1 className="header">Distance</h1>
+        <h1 className="distance-header">Distance</h1>
 
         <ToggleButtonGroup
           value={dist}
@@ -185,7 +187,7 @@ function App() {
         <div>
           <InputMask
             value={distToStr(dist, unit)}
-            mask="99.99"
+            mask="999.99"
             maskChar="0"
             className={classes.input}
             onChange={(event) => setDist(strToDist(event.target.value, unit))}
@@ -221,7 +223,7 @@ function App() {
           </ToggleButtonGroup>
         </div>
 
-        <h1 className="header">Pace and Time</h1>
+        <h1 className="pace-time-header">Pace and Time</h1>
 
         <div className="pace-time">
           <div className="pace-time-slider">
@@ -248,29 +250,56 @@ function App() {
           </div>
 
           <div className="pace-time-inputs">
-            <div>
-              {timeFmt.hours !== "0" && (
-                <>
-                  <span className="digit">{timeFmt.hours}</span>
-                  <span className="metric">h </span>
-                </>
-              )}
-              <span className="digit">{timeFmt.mins}</span>
-              <span className="metric">m </span>
-              <span className="digit">{timeFmt.secs}</span>
-              <span className="metric">s</span>
+            <TimerIcon fontSize="large" color="primary" />
+            <div className="time-container">
+              <IconButton
+                onClick={goDown}
+                color="primary"
+                className="go-faster"
+              >
+                <RemoveIcon />
+              </IconButton>
+              <div>
+                {timeFmt.hours !== "0" && (
+                  <>
+                    <span className="digit">{timeFmt.hours}</span>
+                    <span className="metric">h </span>
+                  </>
+                )}
+                <span className="digit">{timeFmt.mins}</span>
+                <span className="metric">m </span>
+                <span className="digit">{timeFmt.secs}</span>
+                <span className="metric">s</span>
+              </div>
+
+              <IconButton onClick={goUp} color="primary" className="go-slower">
+                <AddIcon />
+              </IconButton>
             </div>
-            <span className="metric">with</span>
-            <div>
-              <span className="digit">{speedFmt.mins}</span>
-              <span className="digit">:</span>
-              <span className="digit">{speedFmt.secs}</span>
-              <sup className="metric">{speedFmt.cents}</sup>
-              <span className="metric"> {speedFmt.unit}</span>
+            <hr></hr>
+            <div className="pace-container">
+              <IconButton
+                onClick={goDown}
+                color="primary"
+                className="go-faster"
+              >
+                <RemoveIcon />
+              </IconButton>
+              <div>
+                <span className="digit">{speedFmt.mins}</span>
+                <span className="digit">:</span>
+                <span className="digit">{speedFmt.secs}</span>
+                <sup className="metric">{speedFmt.cents}</sup>
+                <span className="metric"> {speedFmt.unit}</span>
+              </div>
+              <IconButton onClick={goUp} color="primary" className="go-slower">
+                <AddIcon />
+              </IconButton>
             </div>
+            <SpeedIcon fontSize="large" color="primary" />
           </div>
 
-          <div className="go-faster">
+          {/* <div className="go-faster">
             <IconButton onClick={goDown} color="primary">
               <RemoveIcon />
             </IconButton>
@@ -279,7 +308,7 @@ function App() {
             <IconButton onClick={goUp} color="primary">
               <AddIcon />
             </IconButton>
-          </div>
+          </div> */}
 
           <div className="slow">slow</div>
           <div className="fast">fast</div>
