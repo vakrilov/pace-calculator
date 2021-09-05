@@ -47,7 +47,7 @@ const strToDist = (str: string, unit: DistanceUnit): number => {
 const distToStr = (val: number, unit: DistanceUnit): string => {
   val = unit === "mi" ? val / mileToKm : val;
 
-  return val.toFixed(2).padStart(6, "0");
+  return val.toFixed(2).padStart(5, "0");
 };
 
 const formatSpeed = (val: number, unit: DistanceUnit) => {
@@ -90,7 +90,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     input: {
       marginTop: "12px",
-      width: 100,
+      width: 80,
       "& input": {
         textAlign: "right",
         fontSize: "32px",
@@ -187,7 +187,7 @@ function App() {
         <div>
           <InputMask
             value={distToStr(dist, unit)}
-            mask="999.99"
+            mask="99.99"
             maskChar="0"
             className={classes.input}
             onChange={(event) => setDist(strToDist(event.target.value, unit))}
