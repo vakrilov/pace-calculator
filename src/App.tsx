@@ -259,7 +259,7 @@ function App() {
               >
                 <RemoveIcon />
               </IconButton>
-              <div>
+              <div className="pace-time-labels">
                 {timeFmt.hours !== "0" && (
                   <>
                     <span className="digit">{timeFmt.hours}</span>
@@ -285,7 +285,7 @@ function App() {
               >
                 <RemoveIcon />
               </IconButton>
-              <div>
+              <div className="pace-time-labels">
                 <span className="digit">{speedFmt.mins}</span>
                 <span className="digit">:</span>
                 <span className="digit">{speedFmt.secs}</span>
@@ -298,17 +298,6 @@ function App() {
             </div>
             <SpeedIcon fontSize="large" color="primary" />
           </div>
-
-          {/* <div className="go-faster">
-            <IconButton onClick={goDown} color="primary">
-              <RemoveIcon />
-            </IconButton>
-          </div>
-          <div className="go-slower">
-            <IconButton onClick={goUp} color="primary">
-              <AddIcon />
-            </IconButton>
-          </div> */}
 
           <div className="slow">slow</div>
           <div className="fast">fast</div>
